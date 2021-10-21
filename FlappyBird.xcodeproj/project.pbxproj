@@ -14,6 +14,7 @@
 		721E7306271FF40900CD836F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 721E7305271FF40900CD836F /* Assets.xcassets */; };
 		721E7309271FF40900CD836F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 721E7307271FF40900CD836F /* LaunchScreen.storyboard */; };
 		721E7311271FF8D800CD836F /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 721E7310271FF8D800CD836F /* GameScene.swift */; };
+		72C039C7272023D9006F5D4F /* sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 72C039C6272023D9006F5D4F /* sound.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		721E7308271FF40900CD836F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		721E730A271FF40900CD836F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		721E7310271FF8D800CD836F /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		72C039C6272023D9006F5D4F /* sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				721E7310271FF8D800CD836F /* GameScene.swift */,
 				721E7302271FF40700CD836F /* Main.storyboard */,
 				721E7305271FF40900CD836F /* Assets.xcassets */,
+				72C039C6272023D9006F5D4F /* sound.mp3 */,
 				721E7307271FF40900CD836F /* LaunchScreen.storyboard */,
 				721E730A271FF40900CD836F /* Info.plist */,
 			);
@@ -129,6 +132,7 @@
 			files = (
 				721E7309271FF40900CD836F /* LaunchScreen.storyboard in Resources */,
 				721E7306271FF40900CD836F /* Assets.xcassets in Resources */,
+				72C039C7272023D9006F5D4F /* sound.mp3 in Resources */,
 				721E7304271FF40700CD836F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,21 +7,35 @@
 
 import UIKit
 import SpriteKit
+import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate{
 
     var scrollNode:SKNode!
     var wallNode:SKNode!
     var bird:SKSpriteNode!
+    //----------------------------------------------------------------
+    var item:SKShapeNode!
+    
+    var player: AVAudioPlayer?
+    //----------------------------------------------------------------
+    
     
     // 衝突判定カテゴリー ↓追加
     let birdCategory: UInt32 = 1 << 0       // 0...00001
     let groundCategory: UInt32 = 1 << 1     // 0...00010
     let wallCategory: UInt32 = 1 << 2       // 0...00100
     let scoreCategory: UInt32 = 1 << 3      // 0...01000
+    //----------------------------------------------------------------
+    let itemScoreCategory: UInt32 = 1 << 4
+    //----------------------------------------------------------------
 
     // スコア用
     var score = 0
+    //----------------------------------------------------------------
+    var itemScore = 0
+    var itemScoreLabelNode:SKLabelNode!
+    //----------------------------------------------------------------
     var scoreLabelNode:SKLabelNode!
     var bestScoreLabelNode:SKLabelNode!
     let userDefaults:UserDefaults = UserDefaults.standard
@@ -191,6 +205,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             upper.physicsBody?.isDynamic = false
             wall.addChild(upper)
             
+            //----------------------------------------------------------------
+            // アイテムを作成
+            self.item = SKShapeNode(circleOfRadius: self.bird.size.height / 3)
+            //self.item.position = CGPoint(x: 0 , y: self.frame.size.height/2)
+            self.item.position = CGPoint(x: 0, y: under_wall_y + wallTexture.size().height - slit_length/1.5)
+            self.item.fillColor = .red
+            
+            //接触判定
+            self.item.physicsBody = SKPhysicsBody(circleOfRadius: self.bird.size.height / 3)
+            self.item.physicsBody?.isDynamic = false
+            self.item.physicsBody?.categoryBitMask = self.itemScoreCategory
+            self.item.physicsBody?.contactTestBitMask = self.birdCategory
+            
+            self.item.name = "item"
+            wall.addChild(self.item)
+            //----------------------------------------------------------------
+            
             // スコアアップ用のノード
             let scoreNode = SKNode()
             scoreNode.position = CGPoint(x: upper.size.width + birdSize.width / 2, y: self.frame.height / 2)
@@ -233,7 +264,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         // 衝突のカテゴリー設定
         bird.physicsBody?.categoryBitMask = birdCategory
         bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
-        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory
+        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory | itemScoreCategory // <-追加
 
 
         // アニメーションを設定
@@ -276,7 +307,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 userDefaults.synchronize()
             }
    
-        } else {
+        }
+        //-------------------------------------------------------------------
+        else if (contact.bodyA.categoryBitMask & itemScoreCategory) == itemScoreCategory || (contact.bodyB.categoryBitMask & itemScoreCategory) == itemScoreCategory {
+            playSound()
+            print("getItem")
+            itemScore += 1
+            contact.bodyB.node?.removeFromParent()
+            itemScoreLabelNode.text = "ItemScore:\(itemScore)"
+        }
+        //-------------------------------------------------------------------
+        else {
             // 壁か地面と衝突した
             print("GameOver")
 
@@ -293,6 +334,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     func restart() {
         score = 0
+        //-------------------------------------------------------------------
+        itemScore = 0
+        itemScoreLabelNode.text = "ItemScore:\(itemScore)"
+        //-------------------------------------------------------------------
         scoreLabelNode.text = "Score:\(score)"
 
         bird.position = CGPoint(x: self.frame.size.width * 0.2, y:self.frame.size.height * 0.7)
@@ -321,9 +366,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         bestScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 90)
         bestScoreLabelNode.zPosition = 100 // 一番手前に表示する
         bestScoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
-
         let bestScore = userDefaults.integer(forKey: "BEST")
         bestScoreLabelNode.text = "Best Score:\(bestScore)"
         self.addChild(bestScoreLabelNode)
+        
+        //-------------------------------------------------------------------
+        itemScore = 0
+        itemScoreLabelNode = SKLabelNode()
+        itemScoreLabelNode.fontColor = UIColor.black
+        itemScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 120)
+        itemScoreLabelNode.zPosition = 100
+        itemScoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        itemScoreLabelNode.text = "ItemScore:\(itemScore)"
+        self.addChild(itemScoreLabelNode)
+        //-------------------------------------------------------------------
     }
+    
+    //-------------------------------------------------------------------
+    func playSound(){
+        if let soundURL = Bundle.main.url(forResource: "sound", withExtension: "mp3"){
+            do {
+                player = try AVAudioPlayer(contentsOf: soundURL)
+                print("sound")
+                player?.play()
+            }catch{
+                print("error")
+            }
+        }
+    }
+    
+    //-------------------------------------------------------------------
 }
